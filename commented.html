@@ -1,0 +1,60 @@
+<!-- minifiers hate some of the manual stuff I do to final.html... -->
+<script>
+// arrow up 38
+// arrow down 40
+// abuse deprecated api
+onkeydown = _ => e = _.which;
+// event keycode input buffer, paddle y
+c = e = y = 0;
+// ball x, y, vx, vy
+// abuse return value of setInterval being 0 on first use
+// we can compress the following ahead of time out of bank, YOLO this saves 1 char
+i = j = v = w = setInterval(
+  // smallest way to make a 6x5 array of '_'?
+  // abuse commas in the array initialization to get more chars
+  _ => (p=[
+    // move paddle
+    // +1 moves down
+    // +5 moves up~ (clamped below)
+    // eventually this could overflow...
+    // Number.MAX_SAFE_INTEGER/5/(1000ms/200ms)/60/60/24/365.2525
+    // => ~11416758.6942531 years from now...
+    // ... thats fine.
+    y += e == 40 ? 1 : e == 38 ? 5 : 0,
+    // move ball left-right
+    i += v,
+    // move ball up-down
+    j += w,
+    // hit back wall
+    i > 4 && (v = -1, i = 3),
+    // hit bottom
+    // hit top
+    j > 5 ? (w = -1, j = 4) : j < 0 && (w = j = 1),
+    // reset e to not be arrow key
+    e = 0
+  ].map(_ => [...'_____']),
+  // THIS FOLLOWING LINE IS VERY ORDER OF OPERATIONS SENSITIVE
+  // clamp paddle
+  // place paddle
+  // if ball would be ontop of paddle
+  //   have a hit
+  //   bounce ball
+  // place ball
+  p[j][(p[y %= 6][0] = p[(y + 1) % 6][0] = '>') == p[j][i] ? (++c, i=v=1) : i] = '@',
+  // can't save a char by using unescaped newline due to
+  // stringification for setInterval
+  x.innerText = p.join('\n') + c
+  ), 200);
+</script>
+<pre id=x>
+<!-- what follows is for inspection -->
+</pre>
+<h1>Commented version, not final product.</h1>
+<a href="./final.html">final product</a>
+<details><summary>code</summary>
+  <pre><code id=code>
+    <script>
+      code.innerText = document.querySelector('script').textContent;
+    </script>
+  </code></pre>
+</details>
